@@ -19,10 +19,6 @@ set linea_titulo=+-----+^&echo.
 
 :: ----------------------------- variables (fin) -------------------------------
 
-Set WshShell = CreateObject("Wscript.Shell")
-WshShell.run "wmic path softwareLicensingService get OA3xOriginalProductKey"
-
-
 
 (
     echo %separador%%nl%
@@ -30,10 +26,10 @@ WshShell.run "wmic path softwareLicensingService get OA3xOriginalProductKey"
     echo Computadora consultada: %ComputerName%%nl%
     echo %separador%%nl%
     
-    echo %linea_titulo%LICENCIA WINDOWS%nl%%linea_titulo%
-    echo %licencia_wmic%
+    echo %linea_titulo%PRUEBA%nl%%linea_titulo%
 
 ) > .\INFO_%ComputerName%
+
 
 
 ENDLOCAL
