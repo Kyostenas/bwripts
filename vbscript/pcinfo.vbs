@@ -1003,6 +1003,30 @@ For Each procesador in procesadores
 	line("Version:               " & procesador.Version)
 Next
 
+line(vbNewLine + vbNewLine + lineaTitulo)
+line("BASEBOARD")
+line(lineaTitulo + vbNewline)
+Set baseboards = objWMIService.ExecQuery ("Select * from Win32_BaseBoard")
+
+For Each placaMadre in baseboards
+	line("Leyenda:               " & placaMadre.Caption)
+	line("Opciones de config.:   " & Join(placaMadre.ConfigOptions))
+	line("Descripcion:           " & placaMadre.Description)
+	line("Hot swappable:         " & placaMadre.HotSwappable)
+	line("Manufacturador:        " & placaMadre.Manufacturer)
+	line("Modelo:                " & placaMadre.Model)
+	line("Nombre:                " & placaMadre.Name)
+	line("Numero de parte:       " & placaMadre.PartNumber)
+	line("Producto (modelo):     " & placaMadre.Product)
+	line("Removible:             " & placaMadre.Removable)
+	line("Reemplazable:          " & placaMadre.Replaceable)
+	line("Require placa hija:    " & placaMadre.RequiresDaughterBoard)
+	line("Numero de serie:       " & placaMadre.SerialNumber)
+	line("SKU:                   " & placaMadre.SKU)
+	line("Etiqueta:              " & placaMadre.Tag)
+	line("Version:               " & placaMadre.Version)
+Next
+
 
 '--------
 ' FINAL
