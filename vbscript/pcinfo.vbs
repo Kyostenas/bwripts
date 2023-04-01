@@ -352,9 +352,6 @@ line(separador)
 line(lineaTitulo)
 line("SISTEMAS OPERATIVOS")
 line(lineaTitulo + vbNewline)
-
-
-
 Set dtmConvertedDate = CreateObject("WbemScripting.SWbemDateTime")
 strComputer = "."
 Set objWMIService = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strComputer & "\root\cimv2")
@@ -392,18 +389,91 @@ Next
 texto = obtenerComando("wmic path softwareLicensingService get OA3xOriginalProductKey")
 texto = Split(texto)
 licenciaWmic = texto(2)
-line("Licencia (wmic):     " + licenciaWmic)
+line(vbNewLine + vbNewLine + "Licencia (wmic):     " + licenciaWmic)
 llaveRegistro = ObtenerLlaveLicencia(oShell.RegRead("HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\DigitalProductId"))
 line("Licencia (registro): " & llaveRegistro)
 
 
+
+'--------------------------
+' INFORMACION DE HARDWARE  
+'--------------------------
+
+
+line(vbNewLine + vbNewLine + lineaTitulo)
+line("HARDWARE")
+line(lineaTitulo + vbNewline)
+Set compus = objWMIService.ExecQuery ("Select * from Win32_ComputerSystem ")
+
+For Each compu in compus
+	Wscript.Echo compu.AdminPasswordStatus
+Next
+
+' https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-computersystem
+' For Each part in computer
+' 	line(computer.AutomaticManagedPagefile)
+' 	' line(part.AutomaticResetBootOption)
+' 	' line(part.AutomaticResetCapability)
+' 	' line(part.BootOptionOnLimit)
+' 	' line(part.BootOptionOnWatchDog)
+' 	' line(part.BootROMSupported)
+' 	' line(part.BootupState)
+' 	' line(part.Caption)
+' 	' line(part.ChassisBootupState)
+' 	' line(part.ChassisSKUNumber)
+' 	' line(part.CreationClassName)
+' 	' line(part.CurrentTimeZone)
+' 	' line(part.DaylightInEffect)
+' 	' line(part.Description)
+' 	' line(part.DNSHostName)
+' 	' line(part.Domain)
+' 	' line(part.DomainRole)
+' 	' line(part.EnableDaylightSavingsTime)
+' 	' line(part.FrontPanelResetStatus)
+' 	' line(part.HypervisorPresent)
+' 	' line(part.InfraredSupported)
+' 	' line(part.InstallDate)
+' 	' line(part.KeyboardPasswordStatus)
+' 	' line(part.LastLoadInfo)
+' 	' line(part.Manufacturer)
+' 	' line(part.Model)
+' 	' line(part.Name)
+' 	' line(part.NameFormat)
+' 	' line(part.NetworkServerModeEnabled)
+' 	' line(part.NumberOfLogicalProcessors)
+' 	' line(part.NumberOfProcessors)
+' 	' line(part.PartOfDomain)
+' 	' line(part.PauseAfterReset)
+' 	' line(part.PCSystemType)
+' 	' line(part.PCSystemTypeEx)
+' 	' line(part.PowerManagementSupported)
+' 	' line(part.PowerOnPasswordStatus)
+' 	' line(part.PowerState)
+' 	' line(part.PowerSupplyState)
+' 	' line(part.PrimaryOwnerContact)
+' 	' line(part.PrimaryOwnerName)
+' 	' line(part.ResetCapability)
+' 	' line(part.ResetCount)
+' 	' line(part.ResetLimit)
+' 	' line(part.Status)
+' 	' line(part.SystemFamily)
+' 	' line(part.SystemSKUNumber)
+' 	' line(part.SystemStartupDelay)
+' 	' line(part.SystemStartupSetting)
+' 	' line(part.SystemType)
+' 	' line(part.ThermalState)
+' 	' line(part.TotalPhysicalMemory)
+' 	' line(part.UserName)
+' 	' line(part.WakeUpType)
+' 	' line(part.Workgroup)
+' Next
 
 
 '--------
 ' FINAL
 '--------
 
-line("----------------------------- final del archivo ----------------------------")
+line(vbNewLine + vbNewLine +"----------------------------- final del archivo ----------------------------")
 tituloFinal = "Ejecucion terminada"
 mensajeFinal = "Datos de " + computerName + " obtenidos" + vbNewLine + "Ver: " + dirActual + nombreArchivo
 MsgBox mensajeFinal,, tituloFinal
