@@ -1069,6 +1069,39 @@ For Each disco in discos
 	line("Info estatus:          " & disco.StatusInfo)
 Next
 
+line(vbNewLine + vbNewLine + lineaTitulo)
+line("VIDEO CONTROLLERS")
+line(lineaTitulo + vbNewline)
+Set controladores = objWMIService.ExecQuery ("Select * from Win32_VideoController")
+
+For Each controlador in controladores
+	line("Leyenda:               " & controlador.Caption)
+	line("Descripcion:           " & controlador.Description)
+	line("Nombre:                " & controlador.Name)
+	line("Procesador video:      " & controlador.VideoProcessor)
+Next
+
+line(vbNewLine + vbNewLine + lineaTitulo)
+line("PHYSICAL MEMORY (RAM)")
+line(lineaTitulo + vbNewline)
+Set memorias = objWMIService.ExecQuery ("Select * from Win32_PhysicalMemory ")
+
+For Each memoria in memorias
+	line(vbNewLine + "Etiqueta Slot:         " & memoria.BankLabel)
+	line("Capacidad:             " & convertirBytes(memoria.Capacity))
+	line("Leyenda:               " & memoria.Caption)
+	line("Velocidad configurada: " & memoria.ConfiguredClockSpeed & " MHz")
+	line("Velocidad:             " & memoria.Speed & " MHz")
+	line("Descripcion:           " & memoria.Description)
+	line("Manufacturador:        " & memoria.Manufacturer)
+	line("Modelo:                " & memoria.Model)
+	line("Nombre:                " & memoria.Name)
+	line("Numero de parte:       " & memoria.PartNumber)
+	line("Numero serial:         " & memoria.SerialNumber)
+	' line("SMBIOSMemoryType: " & memoria.SMBIOSMemoryType)
+	line("Tag:                   " & memoria.Tag)
+Next
+
 
 '--------
 ' FINAL
