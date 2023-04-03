@@ -54,7 +54,7 @@ Function obtenerComando(ejecucion)
     obtenerComando = ObjExec.stdOut.ReadAll
 End Function
 
-Function convertirBytes(bytes)
+Function convertirCapacidaDeBytes(bytes)
 	Dim sufijos(9)
 	sufijos(0) = " B" 
 	sufijos(1) = " KB"
@@ -73,7 +73,7 @@ Function convertirBytes(bytes)
 			paso = paso / factor
 			indice = indice + 1
 	Loop While paso >= factor
-	convertirBytes = Round(paso, 2) & sufijos(indice)
+	convertirCapacidaDeBytes = Round(paso, 2) & sufijos(indice)
 End Function
 
 dirActual = directorioActual()
@@ -842,6 +842,195 @@ Function tipoCPU(numero)
 	End Select
 End Function
 
+
+'---------------------------------------------------------------------------------------+
+'     ------------------------- tabla de caracteres ascii ------------------------      |
+'                                                                                       |
+' ------------------------------------------------------------------------------------- |
+' Char  Dec  Oct  Hex | Char  Dec  Oct  Hex | Char  Dec  Oct  Hex | Char  Dec  Oct  Hex |
+' ------------------------------------------------------------------------------------- |
+' (nul)   0 0000 0x00 |        32 0040 0x20 | @      64 0100 0x40 | `      96 0140 0x60 |
+' (soh)   1 0001 0x01 | !      33 0041 0x21 | A      65 0101 0x41 | a      97 0141 0x61 |
+' (stx)   2 0002 0x02 | "      34 0042 0x22 | B      66 0102 0x42 | b      98 0142 0x62 |
+' (etx)   3 0003 0x03 | #      35 0043 0x23 | C      67 0103 0x43 | c      99 0143 0x63 |
+' (eot)   4 0004 0x04 | $      36 0044 0x24 | D      68 0104 0x44 | d     100 0144 0x64 |
+' (enq)   5 0005 0x05 | %      37 0045 0x25 | E      69 0105 0x45 | e     101 0145 0x65 |
+' (ack)   6 0006 0x06 | &      38 0046 0x26 | F      70 0106 0x46 | f     102 0146 0x66 |
+' (bel)   7 0007 0x07 | '      39 0047 0x27 | G      71 0107 0x47 | g     103 0147 0x67 |
+' (bs)    8 0010 0x08 | (      40 0050 0x28 | H      72 0110 0x48 | h     104 0150 0x68 |
+' (ht)    9 0011 0x09 | )      41 0051 0x29 | I      73 0111 0x49 | i     105 0151 0x69 |
+' (nl)   10 0012 0x0a | *      42 0052 0x2a | J      74 0112 0x4a | j     106 0152 0x6a |
+' (vt)   11 0013 0x0b | +      43 0053 0x2b | K      75 0113 0x4b | k     107 0153 0x6b |
+' (np)   12 0014 0x0c | ,      44 0054 0x2c | L      76 0114 0x4c | l     108 0154 0x6c |
+' (cr)   13 0015 0x0d | -      45 0055 0x2d | M      77 0115 0x4d | m     109 0155 0x6d |
+' (so)   14 0016 0x0e | .      46 0056 0x2e | N      78 0116 0x4e | n     110 0156 0x6e |
+' (si)   15 0017 0x0f | /      47 0057 0x2f | O      79 0117 0x4f | o     111 0157 0x6f |
+' (dle)  16 0020 0x10 | 0      48 0060 0x30 | P      80 0120 0x50 | p     112 0160 0x70 |
+' (dc1)  17 0021 0x11 | 1      49 0061 0x31 | Q      81 0121 0x51 | q     113 0161 0x71 |
+' (dc2)  18 0022 0x12 | 2      50 0062 0x32 | R      82 0122 0x52 | r     114 0162 0x72 |
+' (dc3)  19 0023 0x13 | 3      51 0063 0x33 | S      83 0123 0x53 | s     115 0163 0x73 |
+' (dc4)  20 0024 0x14 | 4      52 0064 0x34 | T      84 0124 0x54 | t     116 0164 0x74 |
+' (nak)  21 0025 0x15 | 5      53 0065 0x35 | U      85 0125 0x55 | u     117 0165 0x75 |
+' (syn)  22 0026 0x16 | 6      54 0066 0x36 | V      86 0126 0x56 | v     118 0166 0x76 |
+' (etb)  23 0027 0x17 | 7      55 0067 0x37 | W      87 0127 0x57 | w     119 0167 0x77 |
+' (can)  24 0030 0x18 | 8      56 0070 0x38 | X      88 0130 0x58 | x     120 0170 0x78 |
+' (em)   25 0031 0x19 | 9      57 0071 0x39 | Y      89 0131 0x59 | y     121 0171 0x79 |
+' (sub)  26 0032 0x1a | :      58 0072 0x3a | Z      90 0132 0x5a | z     122 0172 0x7a |
+' (esc)  27 0033 0x1b | ;      59 0073 0x3b | [      91 0133 0x5b | {     123 0173 0x7b |
+' (fs)   28 0034 0x1c | <      60 0074 0x3c | \      92 0134 0x5c | |     124 0174 0x7c |
+' (gs)   29 0035 0x1d | =      61 0075 0x3d | ]      93 0135 0x5d | }     125 0175 0x7d |
+' (rs)   30 0036 0x1e | >      62 0076 0x3e | ^      94 0136 0x5e | ~     126 0176 0x7e |
+' (us)   31 0037 0x1f | ?      63 0077 0x3f | _      95 0137 0x5f | (del) 127 0177 0x7f |
+'---------------------------------------------------------------------------------------+
+
+
+Function decimalA_ASCII(numero)
+	Select Case numero
+		Case 32 decimalA_ASCII  = " "
+		Case 33 decimalA_ASCII  = "!"
+		Case 34 decimalA_ASCII  = "''"
+		Case 35 decimalA_ASCII  = "#"
+		Case 36 decimalA_ASCII  = "$"
+		Case 37 decimalA_ASCII  = "%"
+		Case 38 decimalA_ASCII  = "&"
+		Case 39 decimalA_ASCII  = "'"
+		Case 40 decimalA_ASCII  = "("
+		Case 41 decimalA_ASCII  = ")"
+		Case 42 decimalA_ASCII  = "*"
+		Case 43 decimalA_ASCII  = "+"
+		Case 44 decimalA_ASCII  = ","
+		Case 45 decimalA_ASCII  = "-"
+		Case 46 decimalA_ASCII  = "."
+		Case 47 decimalA_ASCII  = "/"
+		Case 48 decimalA_ASCII  = "0"
+		Case 49 decimalA_ASCII  = "1"
+		Case 50 decimalA_ASCII  = "2"
+		Case 51 decimalA_ASCII  = "3"
+		Case 52 decimalA_ASCII  = "4"
+		Case 53 decimalA_ASCII  = "5"
+		Case 54 decimalA_ASCII  = "6"
+		Case 55 decimalA_ASCII  = "7"
+		Case 56 decimalA_ASCII  = "8"
+		Case 57 decimalA_ASCII  = "9"
+		Case 58 decimalA_ASCII  = ":"
+		Case 59 decimalA_ASCII  = ";"
+		Case 60 decimalA_ASCII  = "<"
+		Case 61 decimalA_ASCII  = "="
+		Case 62 decimalA_ASCII  = ">"
+		Case 63 decimalA_ASCII  = "?"
+		Case 64 decimalA_ASCII  = "@"
+		Case 65 decimalA_ASCII  = "A"
+		Case 66 decimalA_ASCII  = "B"
+		Case 67 decimalA_ASCII  = "C"
+		Case 68 decimalA_ASCII  = "D"
+		Case 69 decimalA_ASCII  = "E"
+		Case 70 decimalA_ASCII  = "F"
+		Case 71 decimalA_ASCII  = "G"
+		Case 72 decimalA_ASCII  = "H"
+		Case 73 decimalA_ASCII  = "I"
+		Case 74 decimalA_ASCII  = "J"
+		Case 75 decimalA_ASCII  = "K"
+		Case 76 decimalA_ASCII  = "L"
+		Case 77 decimalA_ASCII  = "M"
+		Case 78 decimalA_ASCII  = "N"
+		Case 79 decimalA_ASCII  = "O"
+		Case 80 decimalA_ASCII  = "P"
+		Case 81 decimalA_ASCII  = "Q"
+		Case 82 decimalA_ASCII  = "R"
+		Case 83 decimalA_ASCII  = "S"
+		Case 84 decimalA_ASCII  = "T"
+		Case 85 decimalA_ASCII  = "U"
+		Case 86 decimalA_ASCII  = "V"
+		Case 87 decimalA_ASCII  = "W"
+		Case 88 decimalA_ASCII  = "X"
+		Case 89 decimalA_ASCII  = "Y"
+		Case 90 decimalA_ASCII  = "Z"
+		Case 91 decimalA_ASCII  = "["
+		Case 92 decimalA_ASCII  = "\"
+		Case 93 decimalA_ASCII  = "]"
+		Case 94 decimalA_ASCII  = "^"
+		Case 95 decimalA_ASCII  = "_"
+		Case 96 decimalA_ASCII  = "`"
+		Case 97 decimalA_ASCII  = "a"
+		Case 98 decimalA_ASCII  = "b"
+		Case 99 decimalA_ASCII  = "c"
+		Case 100 decimalA_ASCII = "d"
+		Case 101 decimalA_ASCII = "e"
+		Case 102 decimalA_ASCII = "f"
+		Case 103 decimalA_ASCII = "g"
+		Case 104 decimalA_ASCII = "h"
+		Case 105 decimalA_ASCII = "i"
+		Case 106 decimalA_ASCII = "j"
+		Case 107 decimalA_ASCII = "k"
+		Case 108 decimalA_ASCII = "l"
+		Case 109 decimalA_ASCII = "m"
+		Case 110 decimalA_ASCII = "n"
+		Case 111 decimalA_ASCII = "o"
+		Case 112 decimalA_ASCII = "p"
+		Case 113 decimalA_ASCII = "q"
+		Case 114 decimalA_ASCII = "r"
+		Case 115 decimalA_ASCII = "s"
+		Case 116 decimalA_ASCII = "t"
+		Case 117 decimalA_ASCII = "u"
+		Case 118 decimalA_ASCII = "v"
+		Case 119 decimalA_ASCII = "w"
+		Case 120 decimalA_ASCII = "x"
+		Case 121 decimalA_ASCII = "y"
+		Case 122 decimalA_ASCII = "z"
+		Case 123 decimalA_ASCII = "{"
+		Case 124 decimalA_ASCII = "|"
+		Case 125 decimalA_ASCII = "}"
+		Case 126 decimalA_ASCII = "~"
+		Case Else decimalA_ASCII = ""
+	End Select
+End Function
+	
+Function covnertirArregloDecimalA_ASCII(arreglo)
+	caracteresListos = ""
+	For Each charDecimal in arreglo
+		caracteresListos = caracteresListos & decimalA_ASCII(charDecimal)
+	Next
+	covnertirArregloDecimalA_ASCII = caracteresListos
+End Function
+
+Function paramsConeccionPantalla(numero)
+	Select Case numero
+		Case -2 paramsConeccionPantalla = "Nada"
+		Case -1 paramsConeccionPantalla = "Otro"
+		Case 0 paramsConeccionPantalla = "HD15 (VGA)"
+		Case 1 paramsConeccionPantalla = "S-video"
+		Case 2 paramsConeccionPantalla = "Composite video"
+		Case 3 paramsConeccionPantalla = "Component video"
+		Case 4 paramsConeccionPantalla = "DVI"
+		Case 5 paramsConeccionPantalla = "HDMI"
+		Case 6 paramsConeccionPantalla = "Low Voltage Differential Swing (LVDS)/ Mobile Industry Processor Interface (MIPI) Digital Serial Interface (DSI)"
+		Case 8 paramsConeccionPantalla = "D-Jpn"
+		Case 9 paramsConeccionPantalla = "SDI"
+		Case 10 paramsConeccionPantalla = "External Display Port"
+		Case 11 paramsConeccionPantalla = "Embedded Display Port"
+		Case 12 paramsConeccionPantalla = "External Unified Display Interface (UDI)"
+		Case 13 paramsConeccionPantalla = "Embedded Unified Display Interface (UDI)"
+		Case 14 paramsConeccionPantalla = "Dongle cable that supports SDTV"
+		Case 15 paramsConeccionPantalla = "Wireless Miracast session"
+		Case 16 paramsConeccionPantalla = "Wired indirect display device"
+		Case 0x80000000 paramsConeccionPantalla = "Internal connection (Possibly a laptop)"
+		Case Else paramsConeccionPantalla = "?"
+	End Select
+End Function
+
+Function intentarJoin(arreglo)
+	On Error Resume Next
+	intentarJoin = Join(arreglo)
+End Function
+
+Set dtmConvertedDate = CreateObject("WbemScripting.SWbemDateTime")
+strComputer  = "."
+Set objCIMV2 = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" _
+		 				& strComputer & "\root\cimv2")
+Set objWMI   = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" _
+						& strComputer & "\root\wmi")
+
+
 ' :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: '
 '                                   PRINCIPAL                                  '
 ' :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: '
@@ -864,10 +1053,7 @@ line(separador)
 line(lineaTitulo)
 line("SISTEMAS OPERATIVOS")
 line(lineaTitulo + vbNewline)
-Set dtmConvertedDate = CreateObject("WbemScripting.SWbemDateTime")
-strComputer = "."
-Set objWMIService = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strComputer & "\root\cimv2")
-Set oss = objWMIService.ExecQuery ("Select * from Win32_OperatingSystem")
+Set oss = objCIMV2.ExecQuery ("Select * from Win32_OperatingSystem")
 
 For Each os in oss
     dtmConvertedDate.Value = os.InstallDate
@@ -890,8 +1076,8 @@ For Each os in oss
     line("Service pack (minor):  " & os.ServicePackMinorVersion)
     ' line("Tipo build:            " & os.BuildType)
     ' line("Estado del sistema:    " & os.Status)
-    ' line("Memoria virtual:       " & convertirBytes(os.TotalVirtualMemorySize))
-    ' line("Memoria visible:       " & convertirBytes(os.TotalVisibleMemorySize))
+    ' line("Memoria virtual:       " & convertirCapacidaDeBytes(os.TotalVirtualMemorySize))
+    ' line("Memoria visible:       " & convertirCapacidaDeBytes(os.TotalVisibleMemorySize))
     line("Disp arranque:         " & os.BootDevice)
     ' line("Usuario registrado:    " & os.RegisteredUser)
 Next
@@ -907,7 +1093,7 @@ line("Licencia (registro):   " & llaveRegistro)
 line(vbNewLine + vbNewLine + lineaTitulo)
 line("BIOS")
 line(lineaTitulo + vbNewline)
-Set bioss = objWMIService.ExecQuery ("Select * from Win32_BIOS  ")
+Set bioss = objCIMV2.ExecQuery ("Select * from Win32_BIOS  ")
 
 For Each bios in bioss
 	dtmConvertedDate.Value = bios.ReleaseDate
@@ -941,7 +1127,7 @@ Next
 line(vbNewLine + vbNewLine + lineaTitulo)
 line("COMPUTER SYSTEM")
 line(lineaTitulo + vbNewline)
-Set compus = objWMIService.ExecQuery ("Select * from Win32_ComputerSystem ")
+Set compus = objCIMV2.ExecQuery ("Select * from Win32_ComputerSystem ")
 
 For Each compu in compus
 	line(vbNewLine + "Estado de booteo:      " & compu.BootupState)
@@ -963,14 +1149,14 @@ For Each compu in compus
 	' line("Familia sistema:       " & compu.SystemFamily)
 	' line("SKU sistema:           " & compu.SystemSKUNumber)
 	' line("Tipo de sistema:       " & compu.SystemType)
-	line("Memoria fisica (RAM):  " & convertirBytes(compu.TotalPhysicalMemory))
+	line("Memoria fisica (RAM):  " & convertirCapacidaDeBytes(compu.TotalPhysicalMemory))
 	' line("Grupo de trabajo:      " & compu.Workgroup)
 Next
 
 line(vbNewLine + vbNewLine + lineaTitulo)
 line("COMPUTER SYSTEM PRODUCT")
 line(lineaTitulo + vbNewline)
-Set csproducts = objWMIService.ExecQuery ("Select * from Win32_ComputerSystemProduct")
+Set csproducts = objCIMV2.ExecQuery ("Select * from Win32_ComputerSystemProduct")
 
 For Each csproduct in csproducts
 	line(vbNewLine + "Leyenda:               " & csproduct.Caption)
@@ -986,7 +1172,7 @@ Next
 line(vbNewLine + vbNewLine + lineaTitulo)
 line("BASEBOARD")
 line(lineaTitulo + vbNewline)
-Set baseboards = objWMIService.ExecQuery ("Select * from Win32_BaseBoard")
+Set baseboards = objCIMV2.ExecQuery ("Select * from Win32_BaseBoard")
 
 For Each placaMadre in baseboards
 	line(vbNewLine + "Leyenda:               " & placaMadre.Caption)
@@ -1011,7 +1197,7 @@ Next
 line(vbNewLine + vbNewLine + lineaTitulo)
 line("PROCESSOR")
 line(lineaTitulo + vbNewline)
-Set procesadores = objWMIService.ExecQuery ("Select * from Win32_Processor ")
+Set procesadores = objCIMV2.ExecQuery ("Select * from Win32_Processor ")
 
 For Each procesador in procesadores
 	line(vbNewLine + "Arquitectura:          " & arquitecturaCPU(procesador.Architecture))
@@ -1022,8 +1208,8 @@ For Each procesador in procesadores
 	' line("Descripcion:           " & procesador.Description)
 	' line("DeviceID:              " & procesador.DeviceID)
 	' line("Family:                " & procesador.Family)
-	line("Cache L2:              " & convertirBytes(procesador.L2CacheSize))
-	line("Cache L3:              " & convertirBytes(procesador.L3CacheSize))
+	line("Cache L2:              " & convertirCapacidaDeBytes(procesador.L2CacheSize))
+	line("Cache L3:              " & convertirCapacidaDeBytes(procesador.L3CacheSize))
 	' line("Nivel:                 " & procesador.Level)
 	line("Manufacturador:        " & procesador.Manufacturer)
 	line("Nombre (modelo):       " & procesador.Name)
@@ -1047,7 +1233,7 @@ Next
 line(vbNewLine + vbNewLine + lineaTitulo)
 line("DISKDRIVES")
 line(lineaTitulo + vbNewline)
-Set discos = objWMIService.ExecQuery ("Select * from Win32_DiskDrive")
+Set discos = objCIMV2.ExecQuery ("Select * from Win32_DiskDrive")
 
 For Each disco in discos
 	line(vbNewLine & "Capacidades:           " & Join(disco.CapabilityDescriptions, ", "))
@@ -1064,15 +1250,15 @@ For Each disco in discos
 	' line("Particiones:           " & disco.Partitions)
 	' line("ID dispositivo PNP:    " & disco.PNPDeviceID)
 	line("Numero serial:         " & disco.SerialNumber)
-	line("Capacidad:             " & convertirBytes(disco.Size))
+	line("Capacidad:             " & convertirCapacidaDeBytes(disco.Size))
 	line("Estatus:               " & disco.Status)
 	line("Info estatus:          " & disco.StatusInfo)
 Next
 
 line(vbNewLine + vbNewLine + lineaTitulo)
-line("VIDEO CONTROLLERS")
+line("VIDEO CONTROLLERS (GPU's - GRAFICAS)")
 line(lineaTitulo + vbNewline)
-Set controladores = objWMIService.ExecQuery ("Select * from Win32_VideoController")
+Set controladores = objCIMV2.ExecQuery ("Select * from Win32_VideoController")
 
 For Each controlador in controladores
 	line("Leyenda:               " & controlador.Caption)
@@ -1084,11 +1270,11 @@ Next
 line(vbNewLine + vbNewLine + lineaTitulo)
 line("PHYSICAL MEMORY (RAM)")
 line(lineaTitulo + vbNewline)
-Set memorias = objWMIService.ExecQuery ("Select * from Win32_PhysicalMemory ")
+Set memorias = objCIMV2.ExecQuery ("Select * from Win32_PhysicalMemory ")
 
 For Each memoria in memorias
 	line(vbNewLine + "Etiqueta Slot:         " & memoria.BankLabel)
-	line("Capacidad:             " & convertirBytes(memoria.Capacity))
+	line("Capacidad:             " & convertirCapacidaDeBytes(memoria.Capacity))
 	line("Leyenda:               " & memoria.Caption)
 	line("Velocidad configurada: " & memoria.ConfiguredClockSpeed & " MHz")
 	line("Velocidad:             " & memoria.Speed & " MHz")
@@ -1098,8 +1284,46 @@ For Each memoria in memorias
 	line("Nombre:                " & memoria.Name)
 	line("Numero de parte:       " & memoria.PartNumber)
 	line("Numero serial:         " & memoria.SerialNumber)
-	' line("SMBIOSMemoryType: " & memoria.SMBIOSMemoryType)
 	line("Tag:                   " & memoria.Tag)
+Next
+
+line(vbNewLine + vbNewLine + lineaTitulo)
+line("DESKTOP MONITORS")
+line(lineaTitulo + vbNewline)
+Set monitores = objWMI.ExecQuery("Select * from WMIMonitorID")
+
+For Each monitor in monitores
+	line(vbNewLine + "Activo:                " & monitor.Active)
+	line("Nombre instancia:      " & monitor.InstanceName)
+	line("Manufacturador:        " & covnertirArregloDecimalA_ASCII(monitor.ManufacturerName))
+	line("Codigo de producto:    " & covnertirArregloDecimalA_ASCII(monitor.ProductCodeID))
+	line("Numero de serie:       " & covnertirArregloDecimalA_ASCII(monitor.SerialNumberID))
+	line("Semana de manufactura: " & monitor.WeekOfManufacture)
+	line("Year de manufactora:   " & monitor.YearOfManufacture)
+	line("Nombre amigable:       " & covnertirArregloDecimalA_ASCII(monitor.UserFriendlyName))
+Next
+
+line(vbNewLine + "----")
+Set conjuntosParamsMonitores = objWMI.ExecQuery("Select * from WmiMonitorConnectionParams")
+
+For Each parametrosMonitor in conjuntosParamsMonitores
+	line(vbNewLine + "Nombre instancia:      " & parametrosMonitor.InstanceName)
+	line("Tecnologia salida:     " & paramsConeccionPantalla(parametrosMonitor.VideoOutputTechnology))
+Next
+
+line(vbNewLine + vbNewLine + lineaTitulo)
+line("NETWORK")
+line(lineaTitulo + vbNewline)
+Set adaptadoresRed = objCIMV2.ExecQuery("Select * from Win32_NetworkAdapterConfiguration where IPEnabled=True")
+
+For Each adaptadorRed in adaptadoresRed
+	line(vbNewLine + "Leyenda:               " & adaptadorRed.Caption)
+	line("Descripcion:           " & adaptadorRed.Description)
+	line("Default IP Gateway:    " & intentarJoin(adaptadorRed.DefaultIPGateway))
+	line("DHCP activado:         " & adaptadorRed.DHCPEnabled)
+	line("Servidor DHCP:         " & adaptadorRed.DHCPServer)
+	line("Direccion IP:          " & intentarJoin(adaptadorRed.IPAddress))
+	line("Direccion MAC:         " & adaptadorRed.MACAddress)
 Next
 
 
@@ -1109,8 +1333,17 @@ Next
 
 line(vbNewLine + vbNewLine +"----------------------------- final del archivo ----------------------------")
 tituloFinal = "Ejecucion terminada"
+
 mensajeFinal = "Datos de " + computerName + " obtenidos" + vbNewLine + "Ver: " + dirActual + nombreArchivo
 MsgBox mensajeFinal,, tituloFinal
 
 
 ' ------------------------------ principal (fin) ----------------------------- '
+
+
+
+
+
+
+
+
