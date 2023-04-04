@@ -14,6 +14,7 @@ Dim strFromProc
 Set oShell = WScript.CreateObject("WScript.Shell")
 
 Function directorioActual()
+	On Error Resume Next
     Dim FSO
     Set fso = CreateObject("Scripting.FileSystemObject")
     directorioActual = FSO.GetAbsolutePathName(".")
@@ -25,6 +26,7 @@ lineaTitulo   ="--------------------------------"
 lineaSubTitulo="'''''''''''''''''''''''"
 
 Function ObtenerLlaveLicencia(Key)
+	On Error Resume Next
     Const KeyOffset = 52
     i = 28
     Chars = "BCDFGHJKMPQRTVWXY2346789"
@@ -48,13 +50,14 @@ Function ObtenerLlaveLicencia(Key)
     ObtenerLlaveLicencia = KeyOutput
 End Function
 
-
 Function obtenerComando(ejecucion)
+	On Error Resume Next
     Set ObjExec = oShell.Exec("cmd.exe /c " & ejecucion)
     obtenerComando = ObjExec.stdOut.ReadAll
 End Function
 
 Function convertirCapacidaDeBytes(bytes)
+	On Error Resume Next
 	Dim sufijos(9)
 	sufijos(0) = " B" 
 	sufijos(1) = " KB"
@@ -986,6 +989,7 @@ Function decimalA_ASCII(numero)
 End Function
 	
 Function covnertirArregloDecimalA_ASCII(arreglo)
+	On Error Resume Next
 	caracteresListos = ""
 	For Each charDecimal in arreglo
 		caracteresListos = caracteresListos & decimalA_ASCII(charDecimal)
