@@ -1027,6 +1027,29 @@ Function intentarJoin(arreglo)
 	intentarJoin = Join(arreglo)
 End Function
 
+
+Function inputUsuario(prompt, defecto)
+'-------------------------------------------------------------------------+
+' This function prompts the user for some input.                          |
+' When the script runs in CSCRIPT.EXE, StdIn is used,                     |
+' otherwise the VBScript InputBox( ) function is used.                    |
+' myPrompt is the the text used to prompt the user for input.             |
+' The function returns the input typed either on StdIn or in InputBox( ). |
+' Written by Rob van der Woude                                            |
+' http://www.robvanderwoude.com                                           |
+'-------------------------------------------------------------------------+
+	' Check if the script runs in CSCRIPT.EXE
+	If UCase( Right( WScript.FullName, 12) ) = "\CSCRIPT.EXE" Then
+		' If so, use StdIn and StdOut
+		WScript.StdOut.Write prompt & " "
+		inputUsuario = WScript.StdIn.ReadLine
+	Else
+		' If not, use InputBox()
+		inputUsuario = InputBox( prompt, "Inventario de computadoras", defecto)
+	End If
+End Function
+
+
 Set dtmConvertedDate = CreateObject("WbemScripting.SWbemDateTime")
 strComputer  = "."
 Set objCIMV2 = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" _
@@ -1044,10 +1067,10 @@ Set objWMI   = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" _
 '-------------
 
 line(separador)
-line("Usuario: ")
-line("Departamento: ")
+line("Usuario:                 " & inputUsuario("Nombre del usuario", "Usuario"))
+line("Departamento:            " & inputUsuario("Departamento donde trabaja", "Departamento"))
 line("Computadora de consulta: " + computerName)
-line("Fecha de consulta: " + fechaHoy)
+line("Fecha de consulta:       " + fechaHoy)
 line(separador)
 
 '--------------------
