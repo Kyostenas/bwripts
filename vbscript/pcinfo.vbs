@@ -29,6 +29,7 @@ Set objFSO=CreateObject("Scripting.FileSystemObject")
 Set objFile=objFSO.CreateTextFile("."+nombreArchivo,2,true)
 
 Function line(text)
+	On Error Resume Next
     objFile.WriteLine(text)
 End Function
 
@@ -1066,6 +1067,7 @@ Set objWMI   = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" _
 ' :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: '
 '                                   PRINCIPAL                                  '
 ' :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: '
+On Error Resume Next
 
 '-------------
 ' ENCABEZADO
